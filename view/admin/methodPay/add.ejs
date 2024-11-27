@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
+<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:18 GMT -->
+
+<%- include('../layout/head') %>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__shake" th:src="@{/asset/img/AdminLTELogo.png}" alt="AdminLTELogo" height="60" width="60">
+		</div>
+        <%- include('../layout/header') %>
+		<%- include('../layout/siderbar') %>
+
+		<div class="content-wrapper">
+
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0">Thêm</h1>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+								<li class="breadcrumb-item active">Thêm </li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+				 <section class="content">
+			
+			      <!-- Default box -->
+			      <div class="col-8">
+						<div class="card p-5">
+						<form role="form" method="post" action="/admin/methodPay/add" >
+							
+							<div class="form-group">
+								<label for="exampleInputEmail1">Tên phương thức thanh toán</label>
+								<input type="text" class="form-control" name="name" >
+							</div>
+							
+							<div class="box-footer">
+								<button type="submit" class="btn btn-primary">Thêm</button>
+							</div>
+						</form>
+						
+						</div>
+			      </div>
+			    </section>
+		
+		</div>
+		
+
+	</div>
+
+	<%- include('../layout/footer') %>
+
+	<aside class="control-sidebar control-sidebar-dark">
+
+	</aside>
+
+	</div>
+	
+		
+
+    <%- include('../layout/script') %>
+<script>
+			CKEDITOR.replace( 'editor1' );
+		</script>
+<script>
+	$(".nav-link").each(function () {
+            var paragraph = $(this).find("p"); // Tìm thẻ <p> trong thẻ <a>
+            var paragraphText = paragraph.text().trim(); // Lấy nội dung của thẻ <p>
+
+            // Kiểm tra nội dung của thẻ <p>
+            if (paragraphText === "Banner") {
+                $(this).addClass("active"); // Thêm class "active" vào thẻ <a>
+            }
+        });
+</script>	
+</body>
+
+<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:47 GMT -->
+
+</html>

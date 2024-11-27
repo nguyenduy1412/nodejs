@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
+<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:18 GMT -->
+
+<%- include('../layout/head') %>
+	<style>
+		/* Đặt chiều cao tối thiểu cho CKEditor */
+		.ck-editor__editable_inline {
+			min-height: 200px;
+			font-size: 16px;
+		}
+	</style>
+
+	<body class="hold-transition sidebar-mini layout-fixed">
+		<div class="wrapper">
+
+			<div class="preloader flex-column justify-content-center align-items-center">
+				<img class="animation__shake" th:src="@{/asset/img/AdminLTELogo.png}" alt="AdminLTELogo" height="60"
+					width="60">
+			</div>
+			<%- include('../layout/header') %>
+				<%- include('../layout/siderbar') %>
+
+					<div class="content-wrapper">
+
+						<div class="content-header">
+							<div class="container-fluid">
+								<div class="row mb-2">
+									<div class="col-sm-6">
+										<h1 class="m-0">Thêm </h1>
+									</div>
+									<div class="col-sm-6">
+										<ol class="breadcrumb float-sm-right">
+											<li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+											<li class="breadcrumb-item active">Thêm </li>
+										</ol>
+									</div>
+								</div>
+							</div>
+						</div>
+						<section class="content">
+
+							<!-- Default box -->
+							<div class="col-8">
+								<div class="card p-5">
+									<form role="form" method="post" action="/admin/product/update"
+										enctype="multipart/form-data">
+										<input type="hidden" class="form-control" name="id" value="<%=product.id%>">
+										<input type="hidden" class="form-control" name="image" value="<%=product.image%>">
+										<div class="box-body">
+											<div class="form-group">
+												<label for="exampleInputEmail1">Tên Sách</label>
+												<input type="text" class="form-control" name="name" value="<%=product.name%>">
+											</div>
+
+											<div class="form-group">
+												<label for="exampleSelectBorderWidth2">Tác giả</label>
+												<select class="custom-select form-control-border border-width-2"
+													name="brandId">
+													<% brands.forEach(item=> { %>
+														<option value="<%= item.id %>">
+															<%= item.name %>
+														</option>
+														<% }); %>
+												</select>
+											</div>
+
+											<div class="form-group">
+												<label for="exampleInputEmail1">Giá nhập</label>
+												<input type="number" class="form-control" name="price_enter" value="<%=product.priceEnter%>">
+											</div>
+
+											<div class="form-group">
+												<label for="exampleInputEmail1">Lợi nhuận</label>
+												<input type="number" class="form-control" name="profit" value="<%=product.profit%>">
+											</div>
+
+											<div class="form-group">
+												<label for="exampleInputEmail1">Sale</label>
+												<input type="number" class="form-control" name="sale" value="<%=product.sale%>">
+											</div>
+
+											<div class="form-group">
+												<label for="exampleInputFile">Ảnh</label>
+												<div class="input-group">
+													<div class="custom-file">
+														<input type="file" class="custom-file-input" id="input"
+															name="img" value="<%=product.image%>">
+														<label class="custom-file-label" for="exampleInputFile">Choose
+															file</label>
+													</div>
+													<div class="input-group-append">
+														<span class="input-group-text">Tải ảnh</span>
+													</div>
+												</div>
+											</div>
+											<!-- 							
+								<img id="imgChange" src="/uploads/anh.jpg" class="pt-2 d-none" width="200px"> -->
+
+											<!-- <div class="form-group">
+									<label for="exampleInputFile">Ảnh mô tả</label>
+									<div class="input-group">
+										<div class="custom-file">
+											<input type="file" class="custom-file-input" id="exampleInputFile" name="fileImages" multiple>
+											<label class="custom-file-label" for="exampleInputFile">Choose file</label>
+										</div>
+										<div class="input-group-append">
+											<span class="input-group-text">Tải ảnh</span>
+										</div>
+									</div>
+								</div> -->
+
+
+
+											<div class="form-group">
+												<label for="exampleInputEmail1">Năm xuất bản</label>
+												<input type="number" class="form-control" name="publicationYear" value="<%=product.publicationYear%>">
+											</div>
+
+											<div class="form-group">
+												<label for="exampleSelectBorderWidth2">Danh mục</label>
+												<select class="custom-select form-control-border border-width-2"
+													name="categoryId">
+													<% categories.forEach(item=> { %>
+														<option value="<%= item.id %>">
+															<%= item.name %>
+														</option>
+														<% }); %>
+												</select>
+											</div>
+
+											<div class="form-group">
+												<label for="exampleInputPassword1">Trạng thái</label>
+												<div class="form-check">
+													<input class="form-check-input" type="radio" value="1"
+													name="status" <%= product.status  ? 'checked' : '' %>>
+													<label class="form-check-label" for="flexCheckDefault">
+														Hiện
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="radio" value="0"
+													name="status" <%= !product.status  ? 'checked' : '' %>>
+													<label class="form-check-label" for="flexCheckChecked">
+														Ẩn
+													</label>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<textarea name="description" id="editor"><%= product.description %></textarea>
+											</div>
+										</div>
+
+										<div class="box-footer">
+											<button type="submit" class="btn btn-primary">Cập nhật</button>
+										</div>
+									</form>
+
+								</div>
+							</div>
+						</section>
+
+					</div>
+
+
+		</div>
+
+		<%- include('../layout/footer') %>
+
+			<aside class="control-sidebar control-sidebar-dark">
+
+			</aside>
+
+			<script>
+				$(".nav-link").each(function () {
+					var paragraph = $(this).find("p"); // Tìm thẻ <p> trong thẻ <a>
+					var paragraphText = paragraph.text().trim(); // Lấy nội dung của thẻ <p>
+
+					// Kiểm tra nội dung của thẻ <p>
+					if (paragraphText === "Sản phẩm") {
+						$(this).addClass("active"); // Thêm class "active" vào thẻ <a>
+					}
+				});
+			</script>
+
+
+
+			<%- include('../layout/script') %>
+				<script>
+					ClassicEditor.create(document.querySelector('#editor'), {
+						toolbar: [
+							'heading', '|',
+							'bold', 'italic', 'link', '|',
+							'bulletedList', 'numberedList', 'blockQuote', '|',
+							'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+							'undo', 'redo'
+						]
+					})
+						.then(editor => {
+							editor.ui.view.editable.element.style.height = '200px';
+						})
+						.catch(error => {
+							console.error('Lỗi khi khởi tạo CKEditor:', error);
+						});
+				</script>
+	</body>
+
+	<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:47 GMT -->
+
+</html>

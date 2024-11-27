@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
+<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:18 GMT -->
+
+<%- include('../layout/head') %>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- <div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__shake" th:src="@{/asset/img/AdminLTELogo.png}" alt="AdminLTELogo" height="60"
+				width="60">
+		</div> -->
+
+		<%- include('../layout/header') %>
+
+
+		<%- include('../layout/siderbar') %>
+
+		<div class="content-wrapper">
+
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0">Đơn hàng</h1>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<!-- <li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li> -->
+								<li class="breadcrumb-item active">Đơn hàng</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<section class="content">
+
+				<!-- Default box -->
+				<div class="col-12">
+					<div class="card">
+						
+						<div class="card-body table-responsive p-0" style="height: 400px;">
+							<table class="table table-head-fixed text-nowrap">
+								<thead>
+									<tr>
+										<th>STT</th>
+										<th>Tên người nhận</th>
+										<th>Trạng thái</th>
+										<th>Ngày đặt</th>
+										<th>Tổng tiền</th>
+										<th>Tùy chọn</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr >
+										<% order.forEach((item,index)=>{ %>
+										<td ><%= index+1 %></td>
+										<td ><%= item.addressShip.name %></td>
+										<td>
+											<select class="badge st" id="<%= item.id %>" >
+												<option value="0" <%= item.status == 0 ? 'selected' : '' %>>Chờ xác nhận</option>
+												<option value="1" <%= item.status == 1 ? 'selected' : '' %>>Đã duyệt</option>
+												<option value="2" <%= item.status == 2 ? 'selected' : '' %>>Đang giao</option>
+												<option value="3" <%= item.status == 3 ? 'selected' : '' %>>Giao thành công</option>
+												<option value="4" <%= item.status == 4 ? 'selected' : '' %>>Yêu cầu hủy</option>
+												<option value="5" <%= item.status == 5 ? 'selected' : '' %>>Đã hủy</option>
+											</select>
+											
+										</td>
+										<td><%= new Date(item.date).toLocaleDateString('vi-VN') %></td>
+										<td><%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.sumMoney) %></td>
+										<td>
+											<a href="/admin/edit-order/<%=item.id %>"
+												class="btn btn-primary">Chi tiết</a>
+										</td>
+										<% }) %>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+					</div>
+
+				</div>
+
+			</section>
+		</div>
+	</div>
+
+	<%- include('../layout/footer') %>
+
+	<aside class="control-sidebar control-sidebar-dark">
+
+	</aside>
+
+	</div>
+
+
+	<%- include('../layout/script') %>
+<script>
+	$(".nav-link").each(function () {
+            var paragraph = $(this).find("p"); // Tìm thẻ <p> trong thẻ <a>
+            var paragraphText = paragraph.text().trim(); // Lấy nội dung của thẻ <p>
+
+            // Kiểm tra nội dung của thẻ <p>
+            if (paragraphText === "Đơn hàng") {
+                $(this).addClass("active"); // Thêm class "active" vào thẻ <a>
+            }
+        });
+		$('.st').change((e) => {
+			let value = e.target.value;
+			let orderId = e.target.id;
+			let data = { status: parseInt(value) };
+		
+			axios.patch(`/api/order/${orderId}`, data, {
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				timeout: 600000
+			})
+			.then(response => {
+				console.log("SUCCESS : ", response.data);
+			})
+			.catch(error => {
+				console.log("ERROR : ", error);
+			});
+		});	
+</script> 
+</body>
+
+<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:47 GMT -->
+
+</html>
