@@ -22,6 +22,13 @@ var app=express();
 app.use(cookieParser());
 const authWeb = require('./middleware/authWeb');
 
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+});
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 const path = require('path');
@@ -45,6 +52,13 @@ const upload = multer({ storage: storage });
 // Import và cấu hình router
 
 app.locals.cache = false;
+app.use("/api/role",roleRoute)
+app.use("/api/user",userRoute)
+app.use("/api",loginRoute)
+app.use("/api/address",addressRoute)
+app.use("/api/cart",cartRoute)
+app.use("/api/order",orderApiRoute)
+app.use("/api/detailCart",detailCartRoute)
 app.use(authWeb);
 app.use('/admin/category', router_category(upload)); 
 
@@ -56,13 +70,7 @@ app.use('/admin/methodPay', methodPayRoute);
 app.use('/admin/discountCode', discountCodeRoute);
 app.use('/admin/order', orderRoute);
 app.use('', homeRoute); 
-app.use("/api/role",roleRoute)
-app.use("/api/user",userRoute)
-app.use("/api",loginRoute)
-app.use("/api/address",addressRoute)
-app.use("/api/cart",cartRoute)
-app.use("/api/order",orderApiRoute)
-app.use("/api/detailCart",detailCartRoute)
+
 app.listen(3000);
 
 mongoose.connect("mongodb://localhost:27017/tmdt").then(()=>{

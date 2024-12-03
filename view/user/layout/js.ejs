@@ -61,48 +61,35 @@
 	<script>
 		function Xoa() {
 			$('.deleteItem').click(function () {
-				// Xử lý sự kiện click ở đây
-				// Ví dụ: In ra nội dung của nút được click
+				
 				let cartItem = $(this).attr('id');
 				console.log(cartItem);
-				$("[data-id='" + cartItem + "']").remove();
+				var row = $(this).closest('tr'); 
+				let quantity = row.find('.product-quantity input').val(); 
+				let price=row.find('.product-price .amount').text().replace(/[^\d]/g, '');
+				console.log("price: " + price)
+				const quantityCart = $('.quantityCart').text();
+				let money= $('.reloadAmout').first().text().replace(/[^\d]/g, '');
+				
+				let newAmount = Number(money) - Number(price);
 
-				$.ajax({
-					type: "DELETE",
-					url: `/api/cartItem/${cartItem}`,
-					cache: false,
-					timeout: 600000,
-					success: function () {
-						// Xử lý khi request DELETE thành công (nếu cần)
-						$.ajax({
-							url: '/reloadCart', // Điền URL của controller trả về view ở đây
-							type: 'GET', // Hoặc 'POST' tùy thuộc vào phương thức của bạn
-							success: function (data) {
-								// Thay đổi nội dung của một phần tử trên trang web bằng nội dung từ view
-								$('#reloadCart').html(data);
-								Xoa();
-								// ajax reloadCartItem
-								Ajax("/reloadCartItem", "#reloadCartItem", ChangQuantity, "POST");
-								/*	Swal.fire({
-										position: 'buttom-end',
-										icon: 'success',
-										title: 'Xóa thành công',
-										showConfirmButton: false,
-										timer: 1500
-									})
-										*/
-								toatsjs("Xóa thành công")
-							},
-							error: function (error) {
-								// Xử lý lỗi nếu có
-								console.error(error);
-							}
-						});
-					},
-					error: function (e) {
-						console.log("Lỗi: " + e);
-					}
+// Định dạng lại số với dấu phân cách hàng nghìn và thêm 'đ'
+				let formattedAmount = new Intl.NumberFormat('vi-VN').format(newAmount) + ' đ';
+			
+				row.remove();
+				$('.quantityCart').text(Number(quantityCart)-quantity)
+				$('.reloadAmout').text(formattedAmount	)
+				axios.delete(`/api/detailCart/${cartItem}`)
+				.then(function (response) {
+					
+					toatsjs("Xóa thành công");
+					console.log("Xóa thành công:", response.data);
+				})
+				.catch(function (error) {
+					console.error("Lỗi khi xóa:", error);
 				});
+				
+				
 
 
 			});
@@ -110,27 +97,20 @@
 		Xoa();
 		function AddCart() {
 			$('.add-to-card').click(function () {
-				let bookId = $(this).attr('id');
+				let productId = $(this).attr('id');
 				let userId = $('#userId').val();
-				console.log(userId);
+				console.log("vào không");
 				let data = {
-					bookId: parseInt(bookId),
-					userId: parseInt(userId)
+					productId: productId,
+					userId: userId
 				};
 				console.log(data)
-				axios.post('/api/cartItem/add', data)
+				axios.post('/api/detailCart', data)
 					.then(function (response) {
-						axios.get('/reloadCart')
-							.then(function (response) {
-								// Thay đổi nội dung của một phần tử trên trang web bằng nội dung từ view
-								document.getElementById('reloadCart').innerHTML = response.data;
-								Xoa();
-								toatsjs("Thêm thành công");
-							})
-							.catch(function (error) {
-								// Xử lý lỗi nếu có
-								console.error(error);
-							});
+						const quantityCart = $('.quantityCart').text();
+						console.log("Số lượng: ",quantityCart);
+						$('.quantityCart').text(Number(quantityCart)+1);
+						toatsjs("Thêm thành công");
 					})
 					.catch(function (error) {
 						console.error('Lỗi: ' + error);
@@ -259,6 +239,9 @@
 		}
 		function toatsjs(messege) {
 			$('.toast-body').text(messege)
+			$('#liveToast').toast({
+				delay: 1000  // Thiết lập thời gian hiển thị của Toast
+			});
 			$('#liveToast').toast('show');
 		}
 		function XemSanPham() {

@@ -2,16 +2,37 @@
 const Banner=require('../../model/banner.model');
 const Cart = require('../../model/cart.model');
 const Category=require('../../model/category.model');
+const DetailCart = require('../../model/detailCart.model');
 const DetailOrder = require('../../model/detailOrder.model');
 const Product=require('../../model/product.model')
 const homController= {
 
     index: async (req,res)=>{
+        console.log("làn 1")
         let cart=null;
         const user=req.user
         if(user){
             cart = await Cart.findOne({ user: user.id })
+            
+            if(cart){
+               
+                const details = await DetailCart.find({ cart:cart.id }).populate('product'); // Lấy tất cả detailCart theo cartId
+                const totalQuantity = details.reduce((sum, detail) => sum + detail.quantity, 0);
+                let sum=0;
+                details.forEach(item => {
+                    sum+=item.product.priceSale * item.quantity;
+                });
+                
+                cart=await Cart.findByIdAndUpdate(cart.id,{
+                    total:totalQuantity,
+                    price:sum
+                })
+            }
+            
         }
+        
+    
+    // Tính tổng số lượng
         
         const listBanners = await Banner.find({}).sort({ position: 1 });
         const listCategories = await Category.find({status:true})
@@ -20,7 +41,7 @@ const homController= {
         .limit(12); 
         const listSale = await Product.find({ sale: { $gt: 0 } }).limit(6);
         
-        console.log("iu sơ",user);
+       
         const groupProducts = (list, groupSize) => {
             const groups = [];
             for (let i = 0; i < list.length; i += groupSize) {
@@ -28,7 +49,7 @@ const homController= {
             }
             return groups;
         };
-        
+        console.log("Cart: "+cart.total)
         // Tách list sản phẩm thành các nhóm có 2 phần tử
         const listNew = groupProducts(listProductNew, 2);
        
