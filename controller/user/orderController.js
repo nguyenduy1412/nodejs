@@ -8,6 +8,7 @@ const Address = require('../../model/address.model')
 const MethodPay = require('../../model/methodPay.model')
 const Order = require('../../model/order.model')
 const DetailOrder = require('../../model/detailOrder.model')
+const DiscountCode = require('../../model/discountCode')
 
 const orderController = {
 
@@ -38,12 +39,17 @@ const orderController = {
             const address= await Address.findOne({ user: user.id });
             console.log("Address",address) 
             const method=await MethodPay.find({  });
+            const discountCodes=await DiscountCode.find({
+                
+            })
+            console.log("DiscountCodes",discountCodes)
             res.render('user/checkout', {
                 detailCarts,
                 cart,
                 user,
                 address,
-                method
+                method,
+                discountCodes
             })
         } catch (error) {
             console.error("Lỗi à", error);
@@ -52,7 +58,11 @@ const orderController = {
     },
     create: async (req, res) => {
         let user = req.user;
+        let discountCode = req.body.discount_code ? req.body.discount_code : null;
         console.log("yiu sơ", user)
+        console.log("total", req.body.sumMoney)
+        console.log("discountCode ", discountCode)
+
         try {
 
             if (!user) {
@@ -86,13 +96,23 @@ const orderController = {
             const detailCarts = await DetailCart.find({ cart: cart.id })
             console.log("HUss")
             const order=await Order.create({
-                sumMoney:cart.price,
+                sumMoney:req.body.sumMoney,
                 status: 0,
                 user:user.id,
                 note:note,
                 pay:payId,
-                addressShip:address.id
+                addressShip:address.id,
+                discountCode:discountCode
             })
+            if(!discountCode){
+                let disCode= await DiscountCode.findOne({
+                    nameCode:discountCode
+                })
+                disCode=await DiscountCode.findByIdAndUpdate(disCode.id,{
+                    quantity:disCode.quantity - 1
+                })
+            }
+            
             console.log("order",order);
             for (const item of detailCarts) {
                 // thêm tất cả item từ cart vào order

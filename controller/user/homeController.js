@@ -49,7 +49,7 @@ const homController= {
             }
             return groups;
         };
-        console.log("Cart: "+cart.total)
+      
         // Tách list sản phẩm thành các nhóm có 2 phần tử
         const listNew = groupProducts(listProductNew, 2);
        

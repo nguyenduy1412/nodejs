@@ -59,6 +59,26 @@
 		chieucao.style.height = height + 'px';
 	</script>
 	<script>
+		function TotalSum() {
+			sum=0
+			quantityCart=0
+			$('.product-subtotal.fomatPrice').each(function () {
+				// Lấy giá trị trong thẻ `<td>` và loại bỏ các ký tự không phải số
+				let priceText = $(this).text().replace(/[^0-9]/g, '');
+				console.log("GIas ",priceText);
+				// Chuyển giá trị từ chuỗi sang số và cộng vào tổng
+				sum += parseFloat(priceText);
+			});
+			$('.product-quantity .ip').each(function () {
+				// Lấy giá trị trong thẻ `<td>` và loại bỏ các ký tự không phải số
+				let quantity = $(this).val();
+				console.log("Quantity",quantity)
+				// Chuyển giá trị từ chuỗi sang số và cộng vào tổng
+				quantityCart += parseInt(quantity);
+			});
+			$('.quantityCart').text(quantityCart);
+			$('.reloadAmout').text(new Intl.NumberFormat('vi-VN').format(sum) + ' đ')
+		}
 		function Xoa() {
 			$('.deleteItem').click(function () {
 				
@@ -68,7 +88,7 @@
 				let quantity = row.find('.product-quantity input').val(); 
 				let price=row.find('.product-price .amount').text().replace(/[^\d]/g, '');
 				console.log("price: " + price)
-				const quantityCart = $('.quantityCart').text();
+				
 				let money= $('.reloadAmout').first().text().replace(/[^\d]/g, '');
 				
 				let newAmount = Number(money) - Number(price);
@@ -77,8 +97,7 @@
 				let formattedAmount = new Intl.NumberFormat('vi-VN').format(newAmount) + ' đ';
 			
 				row.remove();
-				$('.quantityCart').text(Number(quantityCart)-quantity)
-				$('.reloadAmout').text(formattedAmount	)
+				TotalSum()
 				axios.delete(`/api/detailCart/${cartItem}`)
 				.then(function (response) {
 					
@@ -118,22 +137,7 @@
 			});
 		}
 		AddCart();
-		function Ajax(url, id, callback, method) {
-			$.ajax({
-				type: method,
-				url: url, // Loại bỏ dấu ngoặc đơn xung quanh biến
-				cache: false,
-				timeout: 60000, // Đã sửa thành 60000 (milliseconds)
-				success: function (data) {
-					// Loại bỏ dấu ngoặc đơn xung quanh biến id
-					$(id).html(data);
-					callback();
-				},
-				error: function (e) {
-					console.log("Lỗi: " + e);
-				}
-			});
-		}
+		
 		function ChangQuantity() {
 			$('.ip').change(function (e) {
 				let value = e.target.value;
@@ -143,38 +147,20 @@
 				let total = formatPrice1(EpGia(price) * parseInt(value));
 				$(this).closest('tr').find('.product-subtotal').text(total);
 				let data = {quantity: parseInt(value)}
-				$.ajax({
-					type: "PUT",
-					contentType: "application/json",
-					url: `/api/cartItem/${cartId}`,
-					data: JSON.stringify(data),
-					dataType: 'json',
-					cache: false,
-					timeout: 600000,
-					success: function (data, status) {
-						console.log("SUCCESS : ", status);
-						console.log("1");
-						$.ajax({
-							url: '/reloadCart', // Điền URL của controller trả về view ở đây
-							type: 'GET', // Hoặc 'POST' tùy thuộc vào phương thức của bạn
-							success: function (data) {
-								// Thay đổi nội dung của một phần tử trên trang web bằng nội dung từ view
-								$('#reloadCart').html(data);
-								Xoa();
-								Ajax("/reloadCartItem", "#reloadCartItem", ChangQuantity, "POST");
-								toatsjs("Cập nhật thành công")
-							},
-							error: function (error) {
-								// Xử lý lỗi nếu có
-								console.error(error);
-							}
-						});
+				
+				TotalSum()
+				axios.patch(`/api/detailCart/${cartId}`, data, {
+					headers: {
+						'Content-Type': 'application/json'
 					},
-					error: function (e) {
-						console.log("ERROR : ", e);
-					}
+					timeout: 600000
+				})
+				.then(response => {
+					console.log("SUCCESS : ", response.data);
+				})
+				.catch(error => {
+					console.log("ERROR : ", error);
 				});
-
 			})
 		}
 		ChangQuantity();

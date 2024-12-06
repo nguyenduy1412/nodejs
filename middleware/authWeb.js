@@ -11,7 +11,7 @@ const authWeb = async (req, res, next) => {
       return next(); // Bỏ qua middleware cho các đường dẫn này
     }
     req.user = null;
-    let whiteList = ["/product-detail","/product","/category","/login"];
+    let whiteList = ["/product-detail","/product","/category","/login","register"];
     let blackList =["/admin","/cart","/checkout","/myaccount",];
     // console.log("có token không",token)
    

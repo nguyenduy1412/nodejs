@@ -18,15 +18,24 @@ const discountCodeController={
             const dateString = req.body.date;
             console.log(req.body);
             const date = moment(dateString).format('YYYY-MM-DD');
-            const discountCode = await DiscountCode.create({
-                expiry: date,
-                status: req.body.status, // status có thể là true hoặc false
-                total: req.body.total,
-                quantity: req.body.total,
-                money:req.body.money,
-                nameCode: req.body.nameCode // Nếu có hình ảnh
-            });
-            res.redirect('/admin/discountCode');
+            let check= await DiscountCode.findOne({
+                nameCode:req.body.nameCode 
+            })
+            if(!check){
+                const discountCode = await DiscountCode.create({
+                    expiry: date,
+                    status: req.body.status, // status có thể là true hoặc false
+                    total: req.body.total,
+                    quantity: req.body.total,
+                    money:req.body.money,
+                    nameCode: req.body.nameCode // Nếu có hình ảnh
+                });
+                res.redirect('/admin/discountCode');
+            }
+            else{
+                res.render('admin/discountCode/add');
+            }
+            
         } catch (error) {
             console.error(err);
             res.status(500).send("Error retrieving discountCode");

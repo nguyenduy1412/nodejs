@@ -57,13 +57,13 @@
 							<div class="form-group">
 								<label for="exampleInputPassword1">Trạng thái</label>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" value="1" name="status" <%= discountCode.status.equals(Buffer.from([1]))  ? 'checked' : '' %> >
+									<input class="form-check-input" type="radio" value="1" name="status" <%= discountCode.status  ? 'checked' : '' %> >
 									<label class="form-check-label" for="flexCheckDefault">
 										Hiện
 									</label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" value="0" name="status" <%= discountCode.status.equals(Buffer.from([0]))  ? 'checked' : '' %> >
+									<input class="form-check-input" type="radio" value="0" name="status" <%= !discountCode.status  ? 'checked' : '' %> >
 									<label class="form-check-label" for="flexCheckChecked">
 										Ẩn
 									</label>

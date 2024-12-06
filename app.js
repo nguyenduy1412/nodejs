@@ -69,7 +69,7 @@ app.use('/admin/product', router_product(upload));
 app.use('/admin/methodPay', methodPayRoute);
 app.use('/admin/discountCode', discountCodeRoute);
 app.use('/admin/order', orderRoute);
-app.use('', homeRoute); 
+app.use('', homeRoute(upload)); 
 
 app.listen(3000);
 

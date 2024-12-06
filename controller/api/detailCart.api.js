@@ -84,6 +84,42 @@ const deleteDetailCart= async (req, res) => {
         res.status(500).json({message: err.message});
     }
 }
+const updateQuantityCart= async (req, res) => {
+
+    try{
+        console.log("Vào không")
+        console.log("1")
+        const {id} = req.params;
+        console.log("id",id)
+        let detailCart=await DetailCart.findById(id).populate('product')
+        
+        detailCart =await DetailCart.findByIdAndUpdate(id,{
+            quantity: Number(req.body.quantity)
+        })
+        let cart=await Cart.findById(detailCart.cart);
+        
+        let listDetail=await DetailCart.find({cart: cart.id}).populate('product'); 
+            let sum=0;
+            let total=0
+            listDetail.forEach(item => {
+                sum+=item.product.priceSale * item.quantity;
+                total+=item.quantity
+            })
+        console.log("3")
+       
+      
+        cart =await Cart.findByIdAndUpdate(cart.id,{
+            total: total,
+            price: sum
+        })
+        console.log("4")
+        
+        
+        res.status(200).json({message:"detail update successful"})
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
 module.exports ={
-    getDetailCart,addDetailCart,deleteDetailCart
+    getDetailCart,addDetailCart,deleteDetailCart,updateQuantityCart
 }
