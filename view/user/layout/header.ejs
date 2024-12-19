@@ -71,7 +71,7 @@
 				</div>
 				<div class="col-lg-6 col-md-5 col-12">
 					<div class="header-search">
-						<form action="@{/find-book}" method="post">
+						<form action="/product" method="post" id="findProduct">
 							<input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm" value="" />
 							<button type="submit"><i class="fa fa-search"></i></button>
 						</form>
@@ -141,7 +141,7 @@
 								<li class="active"><a href="/">Trang chủ</a>
 
 								</li>
-								<li><a href="Book-details.html">Sách<i class="fa fa-angle-down"></i></a>
+								<li><a href="/product">Sách<i class="fa fa-angle-down"></i></a>
 
 								</li>
 								<li><a href="@{/favourite}">Yêu thích</a></li>

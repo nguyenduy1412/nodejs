@@ -264,6 +264,38 @@
 			});
 			
 		});
+		$('.button-reset').on('click', function (e) {
+			e.preventDefault();
+			let buttonText = $(this).val(); 
+			if (!isNaN(buttonText)) {
+				console.log("Là số");
+				var pageNumber = Number(buttonText);
+				$('input[name="currentPage"]').val(pageNumber);
+				console.log("Page lè: " + pageNumber)
+			} else {
+				console.log("Là chuỗi");
+				$('input[name="categoryId"]').val(buttonText);
+			}// Lấy nội dung văn bản của nút
+			
+
+			$(this).closest('form').submit();
+		});
+		$('#sortLimit').on('change', function () {
+			console.log('Alociation');
+			var selectedValue = $(this).val();
+			$('input[name="limit"]').val(selectedValue);
+			$('#findProduct').submit();
+		});
+		$('.findBookByCate').on('click', function (e) {
+			e.preventDefault();
+			console.log("Hú")
+			var categoryId = $(this).attr('data-value');
+			$('input[name="categoryId"]').val(categoryId);
+			$('input[name="currentPage"]').val(1);
+			
+			$('input[name="limit"]').val(12);
+			$('#findProduct').submit();
+		});
 
 
 	</script>

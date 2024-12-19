@@ -17,6 +17,10 @@ const detailOrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product', 
   },
+  statusReview:{
+    type:Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 const DetailOrder = mongoose.model('DetailOrder', detailOrderSchema);

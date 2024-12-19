@@ -67,7 +67,7 @@
 										<td class="product-price"><span class="amount"><%= new Intl.NumberFormat('vi-VN').format(item.product.priceSale) + ' đ' %></span>
 										</td>
 										<td class="product-quantity"><input id="<%=item.id %>" class="ip"
-												type="number" value="<%= item.quantity %>"></td>
+												type="number" min="1" value="<%= item.quantity %>"></td>
 										<td class="product-subtotal fomatPrice " >
                                             <%= new Intl.NumberFormat('vi-VN').format(item.product.priceSale * item.quantity) + ' đ' %>
 										</td>

@@ -5,9 +5,12 @@
 		<div class="category-menu">
 			<nav class="menu">
 				<ul>
+					<form action="/product" method="post" id="findProduct">
+						<input type="hidden" name="categoryId" >
                     <% listCategories.forEach(category=> { %>
-					<li ><a href="/find-category/<%= category.id %>"> <%= category.name %></a></li>
+					<li ><button  class="button-reset" value="<%= category.id %>"> <%= category.name %></ button></li>
                     <% }); %>
+					</form>
 					<li class="rx-child"><a href="shop.html">Health, Fitness</a></li>
 					<li class="rx-parent">
 						<a class="rx-default">
@@ -38,46 +41,40 @@
 		</div>
 		<div class="product-active-2 owl-carousel">
 			<div class="product-total-2">
-				<div class="single-most-product bd mb-18" th:each="book : ${listTrend2}">
+				<% listTrend.forEach(product =>{ %>
+				<div class="single-most-product bd mb-18" >
 					<div class="most-product-img">
-						<a th:href="@{/book-detail/{id}(id=${book.id})}">
-						<img th:src="@{'/uploads/'+${book.image}}" alt="book" class="primary" />
+						<a href="/product-detail/<%= product.id %>">
+							<img src="/static/uploads/<%= product.image %>" alt="book"
+								class="primary" />
 					</a>
 					</div>
 					<div class="most-product-content">
-						<h4><a th:href="@{/book-detail/{id}(id=${book.id})}"
-							th:text="${#strings.length(book.bookName) > 15 ? #strings.substring(book.bookName, 0, 15) + '...' : book.bookName}"></a></h4>
+						<h4>
+							<a href="/product-detail/<%= product.id %>">
+								<%= product.name.length> 15 ? product.name.substring(0,
+									15) + '...' : product.name %>
+
+							</a>
+						</h4>
 						<div class="product-price">
 							<ul>
-								<li class="pricebook" th:text="${book.priceSale}" ></li>
-								<li class="old-price pricebook" th:if="${book.sale > 0}" th:text="${book.price}"></li>
+								<li class="pricebook">
+									<%= product.priceSale %>
+								</li>
+								<% if (product.sale> 0) { %>
+									<li class="old-price pricebook">
+										<%= product.price %>
+									</li>
+									<% } %>
 							</ul>
 						</div>
 					</div>
 				</div>
-				
+				<% }) %>
 			</div>
 
-			<div class="product-total-2">
-				<div class="single-most-product bd mb-18" th:each="book : ${listTrend1}">
-					<div class="most-product-img">
-						<a th:href="@{/book-detail/{id}(id=${book.id})}">
-						<img th:src="@{'/uploads/'+${book.image}}" alt="book" class="primary" />
-					</a>
-					</div>
-					<div class="most-product-content">
-						<h4><a th:href="@{/book-detail/{id}(id=${book.id})}"
-							th:text="${#strings.length(book.bookName) > 15 ? #strings.substring(book.bookName, 0, 15) + '...' : book.bookName}"></a></h4>
-						<div class="product-price">
-							<ul>
-								<li class="pricebook" th:text="${book.priceSale}" ></li>
-								<li class="old-price pricebook" th:if="${book.sale > 0}" th:text="${book.price}"></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				
-			</div>
+			
 		</div>
 	</div>
 	<!-- most-product-area-end -->

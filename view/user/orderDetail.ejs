@@ -66,13 +66,20 @@
 										</td>
 										<td class="product-price"><span class="amount"><%= new Intl.NumberFormat('vi-VN').format(item.product.priceSale) + ' đ' %></span>
 										</td>
-										<td class="product-quantity"><input id="<%=item.id %>" class="ip"
-												type="number" value="<%= item.quantity %>"></td>
+										<td class="product-quantity"><%= item.quantity %></td>
 										<td class="product-subtotal fomatPrice " >
                                             <%= new Intl.NumberFormat('vi-VN').format(item.product.priceSale * item.quantity) + ' đ' %>
 										</td>
-										<td class="product-remove"><a href="/order-detail/<%= item.id %>"
-											class="btn btn-sqr">View</a></td>
+										<td class="product-remove">
+											<% if(order.status==3 && item.statusReview == false){ %>
+											 <a href="/add-rating/<%= item.id %>"
+												
+											class="btn btn-sqr">Đánh giá</a>
+											<% } else if(order.status==3 && item.statusReview == true) { %>
+												<a 
+													class="btn btn-success text-light">Đã đánh giá</>
+											<% } %>
+										</td>
 												
                                     </tr>
                                     <% }); %>
@@ -84,30 +91,23 @@
 			</div>
 			<div class="row">
 				<div class="col-lg-8 col-md-6 col-12">
-					<div class="buttons-cart mb-30">
-						<ul>
-							<li><a href="#">Cập nhật giỏ hàng</a></li>
-							<li><a href="#">Tiếp tục mua sắm</a></li>
-						</ul>
-					</div>
-					<div class="coupon">
-						<h3>Phiếu mua hàng</h3>
-						<p>Nhập mã phiếu giảm giá của bạn nếu bạn có.</p>
-						<form action="#">
-							<input type="text" placeholder="Coupon code">
-							<a href="#">Áp dụng phiếu giảm giá</a>
-						</form>
-					</div>
+					
 				</div>
 				<div class="col-lg-4 col-md-6 col-12">
 					<div class="cart_totals">
-						<h2>Tổng giỏ hàng</h2>
+						<h2>Tổng đơn hàng hàng</h2>
 						<table>
 							<tbody>
 								<tr class="cart-subtotal">
 									<th>Tổng phụ</th>
 									<td>
-										<span class="amount reloadAmout"><%= new Intl.NumberFormat('vi-VN').format(cart.price) + ' đ' %></span>
+										<span class="amount reloadAmout"><%= new Intl.NumberFormat('vi-VN').format(sum) + ' đ' %></span>
+									</td>
+								</tr>
+								<tr class="cart-subtotal">
+									<th>Mã giảm giá</th>
+									<td>
+										<span class="amount reloadAmout"><%= new Intl.NumberFormat('vi-VN').format(priceDiscount) + ' đ' %></span>
 									</td>
 								</tr>
 								<tr class="shipping">
@@ -127,15 +127,15 @@
 									<th>Tổng cộng</th>
 									<td>
 										<strong>
-											<span class="amount reloadAmout"><%= new Intl.NumberFormat('vi-VN').format(cart.price) + ' đ' %></span>
+											<span class="amount reloadAmout"><%= new Intl.NumberFormat('vi-VN').format(order.sumMoney) + ' đ' %></span>
 										</strong>
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<div class="wc-proceed-to-checkout">
-							<a href="/checkout">Tiến hành mua hàng</a>
-						</div>
+						<!-- <div class="wc-proceed-to-checkout">
+							<a href="/checkout">Hủy đơn hàng</a>
+						</div> -->
 					</div>
 				</div>
 			</div>

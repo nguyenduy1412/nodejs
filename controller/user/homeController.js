@@ -4,7 +4,8 @@ const Cart = require('../../model/cart.model');
 const Category=require('../../model/category.model');
 const DetailCart = require('../../model/detailCart.model');
 const DetailOrder = require('../../model/detailOrder.model');
-const Product=require('../../model/product.model')
+const Product=require('../../model/product.model');
+const Review = require('../../model/review.model');
 const homController= {
 
     index: async (req,res)=>{
@@ -39,6 +40,7 @@ const homController= {
         const listProductNew = await Product.find({})
         .sort({ dateAdded: -1 }) // Sắp xếp giảm dần theo dateAdded
         .limit(12); 
+        const listTrend=await Product.find({}).limit(3);
         const listSale = await Product.find({ sale: { $gt: 0 } }).limit(6);
         
        
@@ -59,13 +61,12 @@ const homController= {
             listNew,
             listSale,
             user,
-            cart
+            cart,
+            listTrend
         })
     },
     productDetail: async (req,res)=>{
         let cart=null;
-        
-       
         const user=req.user
         if(user){
             cart = await Cart.findOne({ user: user.id })
@@ -78,13 +79,98 @@ const homController= {
             if(!product){
                 res.status(500).json({ message: err.message });
             }
-            res.render("user/bookDetail", { product,user ,cart});
+            let listReview= await Review.find({product: product.id})
+            res.render("user/bookDetail", { product,user ,cart,listReview});
         } catch (err) {
             console.log(err);
             res.status(500).json({ message: err.message });
         }
-        
+    },
+    categoryProduct: async (req, res)=>{
+        let cart=null;
+        const user=req.user
+        const page = 1;  // Trang hiện tại
+        const limit = 12; // Số lượng bản ghi mỗi trang
+        if(user){
+            cart = await Cart.findOne({ user: user.id })
+        }
+        const id = req.params.id;
+        try {
+            const skip = (page - 1) * limit;
 
+    // Truy vấn MongoDB với phân trang
+            const listProduct = await Product.find({
+                category: id
+            })
+            .skip(skip)  // Bỏ qua số bản ghi theo trang
+            .limit(limit);
+
+            let listCategory=await Category.find({
+                status: true
+            })
+           
+            res.render("user/findBook", { listProduct,user ,cart,listCategory});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: err.message });
+        }
+    },
+    listProduct: async (req, res)=>{
+        
+        let currentPage = req.body.currentPage || 1;
+        let categoryId=req.body.categoryId|| 1
+        let limit = req.body.limit|| 12
+        console.log("Limit currentPage categoryId",limit,currentPage,categoryId)
+        let cart=null;
+        const user=req.user
+        if(user){
+            cart = await Cart.findOne({ user: user.id })
+        }
+        try {
+            const skip = (currentPage  - 1) * limit;
+
+    // Truy vấn MongoDB với phân trang
+            let listProduct,totalProducts;
+            if(categoryId==1)
+            {
+                listProduct = await Product.find({
+                    status:true
+                })
+                .skip(skip)  // Bỏ qua số bản ghi theo trang
+                .limit(limit);
+                totalProducts = await Product.countDocuments({})
+                console.log("Lo",totalProducts);
+            }
+            else{
+                listProduct = await Product.find({
+                    status:true,
+                    category:categoryId
+                })
+                .skip(skip)  // Bỏ qua số bản ghi theo trang
+                .limit(limit);
+                totalProducts = await Product.countDocuments({
+                    category: categoryId
+                })
+                
+            }
+            
+            
+            const totalPages = Math.ceil(totalProducts / limit); 
+            let listCategory=await Category.find({
+                status: true
+            })
+            let page={
+                totalPages:totalPages,
+                currentPage :currentPage ,
+                limit :limit,
+                categoryId:categoryId
+            }
+          
+            res.render("user/findBook", { listProduct,user ,cart,listCategory,page});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: err.message });
+        }
     }
 
 

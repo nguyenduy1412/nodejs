@@ -45,15 +45,17 @@
 						<div class="single-login">
 							<label>Email<span>*</span></label>
 							<input type="text" name="email" />
-							<span class="txt-danger"><%= errorEmail %></span>
+							<span class="txt-danger email-error"></span>
 						</div>
 						<div class="single-login">
 							<label>Họ tên<span>*</span></label>
 							<input type="text" name="fullName" />
+							<span class="txt-danger fullname-error"></span>
 						</div>
 						<div class="single-login">
 							<label>Mật khẩu <span>*</span></label>
 							<input type="password" name="password" />
+							<span class="txt-danger password-error"></span>
 						</div>
 						<div class="single-login single-login-2">
 							<button type="submit">Đăng ký</button>
@@ -62,8 +64,8 @@
 						</div>
 						<div><a href="#">Quên mật khẩu</a> </div>
 						<div><a href="/login">Đăng nhập</a></div>
-
 					</form>
+					
 				</div>
 			</div>
 		</div>
@@ -71,6 +73,64 @@
 
 	<%- include('./layout/footer') %>
 	<%- include('./layout/js') %>
+	<script>
+		// Hàm kiểm tra định dạng email
+		function isValidEmail(email) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			return emailRegex.test(email);
+		}
+	
+		// Lắng nghe sự kiện submit của form
+		document.querySelector('.login-form').addEventListener('submit', function (event) {
+			let isValid = true; // Biến kiểm tra tính hợp lệ của form
+	
+			// Lấy các trường input
+			const emailInput = document.querySelector('input[name="email"]');
+			const fullNameInput = document.querySelector('input[name="fullName"]');
+			const passwordInput = document.querySelector('input[name="password"]');
+	
+			// Lấy các span hiển thị lỗi
+			const emailError = document.querySelector('.email-error');
+			const fullNameError = document.querySelector('.fullname-error');
+			const passwordError = document.querySelector('.password-error');
+	
+			// Xóa thông báo lỗi cũ
+			emailError.textContent = '';
+			fullNameError.textContent = '';
+			passwordError.textContent = '';
+	
+			// Kiểm tra từng trường
+			if (!emailInput.value.trim()) {
+				isValid = false;
+				emailError.textContent = 'Email không được để trống!';
+				emailError.style.color = 'red';
+			} else if (!isValidEmail(emailInput.value)) {
+				isValid = false;
+				emailError.textContent = 'Email không đúng định dạng!';
+				emailError.style.color = 'red';
+			}
+	
+			if (!fullNameInput.value.trim()) {
+				isValid = false;
+				fullNameError.textContent = 'Họ tên không được để trống!';
+				fullNameError.style.color = 'red';
+			}
+	
+			if (!passwordInput.value.trim()) {
+				isValid = false;
+				passwordError.textContent = 'Mật khẩu không được để trống!';
+				passwordError.style.color = 'red';
+			}
+	
+			// Ngăn form submit nếu không hợp lệ
+			if (!isValid) {
+				event.preventDefault();
+			}
+		});
+	</script>
+	
+	
+	
 </body>
 
 

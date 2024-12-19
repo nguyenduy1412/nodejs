@@ -12,7 +12,8 @@ const createUserService = async (fullName,password,email) => {
         let result = await User.create({
             fullName: fullName,
             password:hashPassword,
-            email:email
+            email:email,
+            img:'1733392124543.jpg'
         })
         return result;
     } catch (error) {

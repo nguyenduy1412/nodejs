@@ -203,6 +203,41 @@
 							console.error('Lỗi khi khởi tạo CKEditor:', error);
 						});
 				</script>
+				<script>
+					document.querySelector('form[role="form"]').addEventListener('submit', function (event) {
+						let isValid = true; // Biến kiểm tra tính hợp lệ
+						const errorMessages = []; // Mảng chứa thông báo lỗi
+				
+						// Lấy tất cả các trường input và textarea cần kiểm tra
+						const inputs = this.querySelectorAll('input[name], select[name], textarea[name]');
+				
+						inputs.forEach(input => {
+							const value = input.value.trim();
+				
+							// Kiểm tra các trường không được để trống
+							if (!value) {
+								isValid = false;
+				
+								// Lấy label của trường và thêm vào thông báo lỗi
+								const label = input.closest('.form-group').querySelector('label').textContent;
+								errorMessages.push(`${label} không được để trống.`);
+								
+								// Đánh dấu ô lỗi (tô viền đỏ)
+								input.style.borderColor = 'red';
+							} else {
+								// Xóa viền đỏ nếu trường hợp lệ
+								input.style.borderColor = '';
+							}
+						});
+				
+						// Hiển thị thông báo lỗi tổng quát nếu có
+						if (!isValid) {
+							event.preventDefault(); // Ngăn gửi form
+							alert(errorMessages.join('\n')); // Hiển thị lỗi bằng alert hoặc bạn có thể hiển thị ở UI
+						}
+					});
+				</script>
+				
 	</body>
 
 	<!-- Mirrored from adminlte.io/themes/v3/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 16 Aug 2023 09:23:47 GMT -->

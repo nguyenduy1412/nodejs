@@ -226,9 +226,11 @@
 																		<div class="single-input-item">
 																			<label for="email" class="required">Ngày
 																				sinh</label>
-																			<input type="date" name="date"
+																			<input type="date" name="date" id="birthdate"
 																				value="<%= user.birthday ? new Date(user.birthday + 'Z').toISOString().split('T')[0] : '' %>" />
-																		</div>
+																				<span class="text-danger error-message"></span>
+
+																			</div>
 																	</div>
 																	<div
 																		class="col-lg-6 d-flex align-items-center justify-content-center">
@@ -321,7 +323,31 @@
 				<!-- Modal end -->
 				<%- include('./layout/js') %>
 					
-
+				<script>
+					// Lấy phần tử input và vùng hiển thị lỗi
+					const birthdateInput = document.getElementById('birthdate');
+					const errorSpan = birthdateInput.nextElementSibling;
+				
+					// Lắng nghe sự kiện input
+					birthdateInput.addEventListener('input', function () {
+						const birthdate = new Date(this.value); // Chuyển giá trị thành ngày
+						const maxYear = 2020; // Giới hạn năm lớn nhất
+				
+						// Xóa thông báo lỗi cũ
+						errorSpan.textContent = '';
+				
+						if (birthdate.getFullYear() >= maxYear) {
+							$('.btn-sqr').hide()
+							errorSpan.textContent = 'Năm sinh không được từ 2020 trở lên.';
+							errorSpan.style.color = 'red';
+							this.style.borderColor = 'red'; // Tô viền đỏ để nhấn mạnh
+						} else {
+							$('.btn-sqr').show()
+							this.style.borderColor = ''; // Xóa viền đỏ nếu hợp lệ
+						}
+					});
+				</script>
+				
 	</body>
 
 
